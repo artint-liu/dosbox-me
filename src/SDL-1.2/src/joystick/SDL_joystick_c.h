@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -40,3 +41,4 @@ extern int SDL_PrivateJoystickHat(SDL_Joystick *joystick,
                                  Uint8 hat, Uint8 value);
 extern int SDL_PrivateJoystickButton(SDL_Joystick *joystick,
                                      Uint8 button, Uint8 state);
+#endif

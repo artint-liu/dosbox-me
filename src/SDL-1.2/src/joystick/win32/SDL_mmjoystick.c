@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -421,3 +422,4 @@ void SetMMerror(char *function, int code)
 	}
 	SDL_SetError("%s", errbuf);
 }
+#endif

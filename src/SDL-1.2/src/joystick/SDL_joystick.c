@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -580,3 +581,5 @@ int SDL_JoystickEventState(int state)
 	return(state);
 #endif /* DISABLE_EVENTS */
 }
+
+#endif

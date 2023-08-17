@@ -50,19 +50,28 @@ static char rcsid =
 extern "C" {
 #endif
 
+//#define MINI_SDL
+
 /* As of version 0.5, SDL is loaded dynamically into the application */
 
 /* These are the flags which may be passed to SDL_Init() -- you should
    specify the subsystems which you will be using in your application.
 */
+#ifndef MINI_SDL
 #define	SDL_INIT_TIMER		0x00000001
+#endif
+
 #define SDL_INIT_AUDIO		0x00000010
 #define SDL_INIT_VIDEO		0x00000020
+#ifndef MINI_SDL
 #define SDL_INIT_CDROM		0x00000100
 #define SDL_INIT_JOYSTICK	0x00000200
+#endif
 #define SDL_INIT_NOPARACHUTE	0x00100000	/* Don't catch fatal signals */
+#ifndef MINI_SDL
 #define SDL_INIT_EVENTTHREAD	0x01000000	/* Not supported on all OS's */
 #define SDL_INIT_EVERYTHING	0x0000FFFF
+#endif
 
 /* This function loads the SDL dynamically linked library and initializes 
  * the subsystems specified by 'flags' (and those satisfying dependencies)

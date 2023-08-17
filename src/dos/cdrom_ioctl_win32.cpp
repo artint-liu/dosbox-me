@@ -42,6 +42,7 @@
 // see the SDL sources, which the mci_ functions are based on
 
 /* General ioctl() CD-ROM command function */
+#ifndef MINI_SDL
 bool CDROM_Interface_Ioctl::mci_CDioctl(UINT msg, DWORD flags, void *arg) {
 	MCIERROR mci_error = mciSendCommand(mci_devid, msg, flags, (DWORD_PTR)arg);
 	if (mci_error!=MMSYSERR_NOERROR) {
@@ -606,4 +607,5 @@ void CDROM_Interface_Ioctl::Close(void) {
 	CloseHandle(hIOCTL);
 }
 
+#endif
 #endif

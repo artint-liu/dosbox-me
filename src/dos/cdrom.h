@@ -31,7 +31,9 @@ typedef struct SMSF {
 	unsigned char fr;
 } TMSF;
 
+#ifndef MINI_SDL
 extern int CDROM_GetMountType(char* path, int force);
+#endif
 
 class CDROM_Interface
 {
@@ -59,7 +61,7 @@ public:
 	
 	virtual void	InitNewMedia		(void) {};
 };	
-
+#ifndef MINI_SDL
 class CDROM_Interface_SDL : public CDROM_Interface
 {
 public:
@@ -87,6 +89,7 @@ private:
 	int		driveID;
 	Uint32	oldLeadOut;
 };
+#endif
 
 class CDROM_Interface_Fake : public CDROM_Interface
 {
@@ -105,6 +108,7 @@ public:
 	bool	LoadUnloadMedia		(bool /*unload*/) { return true; };
 };	
 
+#ifndef MINI_SDL
 class CDROM_Interface_Image : public CDROM_Interface
 {
 private:
@@ -207,6 +211,7 @@ typedef	std::vector<Track>::iterator	track_it;
 	std::string	mcn;
 	Bit8u	subUnit;
 };
+#endif
 
 #if defined (WIN32)	/* Win 32 */
 
@@ -261,6 +266,8 @@ private:
 	DWORD		(*pSendASPI32Command)		(LPSRB);
 	TMSF		oldLeadOut;
 };
+
+#ifndef MINI_SDL
 
 class CDROM_Interface_Ioctl : public CDROM_Interface
 {
@@ -341,6 +348,7 @@ private:
 	} player;
 
 };
+#endif
 
 #endif /* WIN 32 */
 

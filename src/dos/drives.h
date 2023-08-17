@@ -307,6 +307,7 @@ struct isoDirEntry {
 #define IS_HIDDEN(fileFlags)	(fileFlags & ISO_HIDDEN)
 #define ISO_MAX_HASH_TABLE_SIZE 	100
 
+#ifndef MINI_SDL
 class isoDrive : public DOS_Drive {
 public:
 	isoDrive(char driveLetter, const char* device_name, Bit8u mediaid, int &error);
@@ -367,7 +368,7 @@ private:
 	char driveLetter;
 	char discLabel[32];
 };
-
+#endif
 struct VFILE_Block;
 
 class Virtual_Drive: public DOS_Drive {

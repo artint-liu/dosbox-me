@@ -17,6 +17,7 @@
  */
 
 /* $Id: drive_iso.cpp,v 1.27 2009-09-22 21:48:08 c2woody Exp $ */
+#ifndef MINI_SDL
 
 #include <cctype>
 #include <cstring>
@@ -560,3 +561,4 @@ bool isoDrive :: lookup(isoDirEntry *de, const char *path) {
 	}
 	return true;
 }
+#endif

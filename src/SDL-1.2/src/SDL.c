@@ -39,6 +39,8 @@ static char rcsid =
 #include "SDL_leaks.h"
 #endif
 
+#ifndef MINI_SDL
+
 /* Initialization/Cleanup routines */
 #ifndef DISABLE_JOYSTICK
 extern int  SDL_JoystickInit(void);
@@ -53,6 +55,7 @@ extern void SDL_StartTicks(void);
 extern int  SDL_TimerInit(void);
 extern void SDL_TimerQuit(void);
 #endif
+#endif // #ifndef MINI_SDL
 
 /* The current SDL version */
 static SDL_version version = 
@@ -71,8 +74,11 @@ int SDL_InitSubSystem(Uint32 flags)
 #ifndef DISABLE_VIDEO
 	/* Initialize the video/event subsystem */
 	if ( (flags & SDL_INIT_VIDEO) && !(SDL_initialized & SDL_INIT_VIDEO) ) {
-		if ( SDL_VideoInit(getenv("SDL_VIDEODRIVER"),
-		                   (flags&SDL_INIT_EVENTTHREAD)) < 0 ) {
+#ifndef MINI_SDL
+		if ( SDL_VideoInit(getenv("SDL_VIDEODRIVER"), (flags & SDL_INIT_EVENTTHREAD)) < 0 ) {
+#else
+		if (SDL_VideoInit(getenv("SDL_VIDEODRIVER"), flags) < 0) {
+#endif
 			return(-1);
 		}
 		SDL_initialized |= SDL_INIT_VIDEO;
@@ -99,6 +105,7 @@ int SDL_InitSubSystem(Uint32 flags)
 	}
 #endif
 
+#ifndef MINI_SDL
 #ifndef DISABLE_TIMERS
 	/* Initialize the timer subsystem */
 	if ( ! ticks_started ) {
@@ -148,6 +155,7 @@ int SDL_InitSubSystem(Uint32 flags)
 		return(-1);
 	}
 #endif
+#endif // #ifndef MINI_SDL
 	return(0);
 }
 
@@ -177,6 +185,7 @@ int SDL_Init(Uint32 flags)
 void SDL_QuitSubSystem(Uint32 flags)
 {
 	/* Shut down requested initialized subsystems */
+#ifndef MINI_SDL
 #ifndef DISABLE_CDROM
 	if ( (flags & SDL_initialized & SDL_INIT_CDROM) ) {
 		SDL_CDROMQuit();
@@ -195,6 +204,8 @@ void SDL_QuitSubSystem(Uint32 flags)
 		SDL_initialized &= ~SDL_INIT_TIMER;
 	}
 #endif
+#endif // #ifndef MINI_SDL
+
 #ifndef DISABLE_AUDIO
 	if ( (flags & SDL_initialized & SDL_INIT_AUDIO) ) {
 		SDL_AudioQuit();
@@ -211,16 +222,22 @@ void SDL_QuitSubSystem(Uint32 flags)
 
 Uint32 SDL_WasInit(Uint32 flags)
 {
+#ifndef MINI_SDL
 	if ( ! flags ) {
 		flags = SDL_INIT_EVERYTHING;
 	}
+#endif
 	return (SDL_initialized&flags);
 }
 
 void SDL_Quit(void)
 {
 	/* Quit all subsystems */
+#ifndef MINI_SDL
 	SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+#else
+	SDL_QuitSubSystem(0);
+#endif
 
 #ifdef CHECK_LEAKS
 	/* Print the number of surfaces not freed */

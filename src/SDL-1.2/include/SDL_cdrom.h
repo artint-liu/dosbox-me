@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -173,3 +174,4 @@ extern DECLSPEC void SDLCALL SDL_CDClose(SDL_CD *cdrom);
 #include "close_code.h"
 
 #endif /* _SDL_video_h */
+#endif

@@ -520,6 +520,7 @@ protected:
 	Bitu keys;
 };
 
+#ifndef MINI_SDL
 #define MAX_VJOY_BUTTONS 8
 
 static struct {
@@ -527,7 +528,6 @@ static struct {
 	Bit16s axis_pos[8];
 	bool hat_pressed[16];
 } virtual_joysticks[2];
-
 
 class CJAxisBind;
 class CJButtonBind;
@@ -1219,6 +1219,7 @@ public:
 protected:
 	Bit16u button_state;
 };
+#endif
 
 static struct CMapper {
 	SDL_Surface * surface;
@@ -1230,10 +1231,12 @@ static struct CMapper {
 	bool redraw;
 	bool addbind;
 	Bitu mods;
+#ifndef MINI_SDL
 	struct {
 		Bitu num_groups,num;
 		CStickBindGroup * stick[MAXSTICKS];
 	} sticks;
+#endif
 	std::string filename;
 } mapper;
 
@@ -1475,6 +1478,7 @@ public:
 	KBD_KEYS key;
 };
 
+#ifndef MINI_SDL
 class CJAxisEvent : public CContinuousEvent {
 public:
 	CJAxisEvent(char const * const _entry,Bitu _stick,Bitu _axis,bool _positive,CJAxisEvent * _opposite_axis) : CContinuousEvent(_entry) {
@@ -1531,7 +1535,7 @@ public:
 protected:
 	Bitu stick,hat,dir;
 };
-
+#endif
 
 class CModEvent : public CTriggeredEvent {
 public:
@@ -1683,6 +1687,7 @@ static CKeyEvent * AddKeyButtonEvent(Bitu x,Bitu y,Bitu dx,Bitu dy,char const * 
 	return event;
 }
 
+#ifndef MINI_SDL
 static CJAxisEvent * AddJAxisButton(Bitu x,Bitu y,Bitu dx,Bitu dy,char const * const title,Bitu stick,Bitu axis,bool positive,CJAxisEvent * opposite_axis) {
 	char buf[64];
 	sprintf(buf,"jaxis_%d_%d%s",stick,axis,positive ? "+" : "-");
@@ -1714,6 +1719,7 @@ static void AddJHatButton(Bitu x,Bitu y,Bitu dx,Bitu dy,char const * const title
 	CJHatEvent * event=new CJHatEvent(buf,_stick,_hat,_dir);
 	new CEventButton(x,y,dx,dy,title,event);
 }
+#endif
 
 static void AddModButton(Bitu x,Bitu y,Bitu dx,Bitu dy,char const * const title,Bitu _mod) {
 	char buf[64];
@@ -1843,6 +1849,8 @@ static void CreateLayout(void) {
 #undef YO
 #define XO 10
 #define YO 8
+
+#ifndef MINI_SDL
 	/* Joystick Buttons/Texts */
 	/* Buttons 1+2 of 1st Joystick */
 	AddJButtonButton(PX(XO),PY(YO),BW,BH,"1" ,0,0);
@@ -1929,7 +1937,7 @@ static void CreateLayout(void) {
 		new CTextButton(PX(XO+4),PY(YO-1),3*BW,20,"Disabled");
 		new CTextButton(PX(XO+8),PY(YO-1),3*BW,20,"Disabled");
 	}
-   
+#endif
    
    
 	/* The modifier buttons */
@@ -2184,6 +2192,7 @@ void BIND_MappingEvents(void) {
 	}
 }
 
+#ifndef MINI_SDL
 static void InitializeJoysticks(void) {
 	mapper.sticks.num=0;
 	mapper.sticks.num_groups=0;
@@ -2240,10 +2249,12 @@ static void InitializeJoysticks(void) {
 		}
 	}
 }
+#endif
 
 static void CreateBindGroups(void) {
 	bindgroups.clear();
 	new CKeyBindGroup(SDLK_LAST);
+#ifndef MINI_SDL
 	if (joytype != JOY_NONE) {
 #if defined (REDUCE_JOYSTICK_POLLING)
 		// direct access to the SDL joystick, thus removed from the event handling
@@ -2284,14 +2295,17 @@ static void CreateBindGroups(void) {
 			break;
 		}
 	}
+#endif
 }
 
+#ifndef MINI_SDL
 #if defined (REDUCE_JOYSTICK_POLLING)
 void MAPPER_UpdateJoysticks(void) {
 	for (Bitu i=0; i<mapper.sticks.num_groups; i++) {
 		mapper.sticks.stick[i]->UpdateJoystick();
 	}
 }
+#endif
 #endif
 
 void MAPPER_LosingFocus(void) {
@@ -2335,8 +2349,10 @@ void MAPPER_RunInternal() {
 	mapper.exit=false;	
 	mapper.redraw=true;
 	SetActiveEvent(0);
+#ifndef MINI_SDL
 #if defined (REDUCE_JOYSTICK_POLLING)
 	SDL_JoystickEventState(SDL_ENABLE);
+#endif
 #endif
 	while (!mapper.exit) {
 		if (mapper.redraw) {
@@ -2346,8 +2362,10 @@ void MAPPER_RunInternal() {
 		BIND_MappingEvents();
 		SDL_Delay(1);
 	}
+#ifndef MINI_SDL
 #if defined (REDUCE_JOYSTICK_POLLING)
 	SDL_JoystickEventState(SDL_DISABLE);
+#endif
 #endif
 	if(mousetoggle) GFX_CaptureMouse();
 	SDL_ShowCursor(cursor);
@@ -2355,7 +2373,9 @@ void MAPPER_RunInternal() {
 }
 
 void MAPPER_Init(void) {
+#ifndef MINI_SDL
 	InitializeJoysticks();
+#endif
 	CreateLayout();
 	CreateBindGroups();
 	if (!MAPPER_LoadBinds()) CreateDefaultBinds();
@@ -2387,10 +2407,11 @@ void MAPPER_Init(void) {
 #endif
 void MAPPER_StartUp(Section * sec) {
 	Section_prop * section=static_cast<Section_prop *>(sec);
+#ifndef MINI_SDL
 	mapper.sticks.num=0;
 	mapper.sticks.num_groups=0;
-
 	memset(&virtual_joysticks,0,sizeof(virtual_joysticks));
+#endif
 
 	usescancodes = false;
 

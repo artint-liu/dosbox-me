@@ -17,6 +17,7 @@
  */
 
 /* $Id: dos_mscdex.cpp,v 1.59 2009-04-16 12:28:30 qbix79 Exp $ */
+#ifndef MINI_SDL
 
 #include <string.h>
 #include <ctype.h>
@@ -251,6 +252,7 @@ int CMscdex::AddDrive(Bit16u _drive, char* physicalPath, Bit8u& subUnit)
 	// Set return type to ok
 	int result = 0;
 	// Get Mounttype and init needed cdrom interface
+#ifndef MINI_SDL
 	switch (CDROM_GetMountType(physicalPath,forceCD)) {
 	case 0x00: {	
 		LOG(LOG_MISC,LOG_NORMAL)("MSCDEX: Mounting physical cdrom: %s"	,physicalPath);
@@ -307,6 +309,7 @@ int CMscdex::AddDrive(Bit16u _drive, char* physicalPath, Bit8u& subUnit)
 	default	:	// weird result
 		return 6;
 	};
+#endif
 
 	if (!cdrom[numDrives]->SetDevice(physicalPath,forceCD)) {
 //		delete cdrom[numDrives] ; mount seems to delete it
@@ -1321,3 +1324,4 @@ void MSCDEX_Init(Section* sec) {
 	/* Create MSCDEX */
 	mscdex = new CMscdex;
 }
+#endif

@@ -151,6 +151,7 @@ int SDL_VideoInit (const char *driver_name, Uint32 flags)
 	Uint32 video_flags;
 
 	/* Toggle the event thread flags, based on OS requirements */
+#ifndef MINI_SDL
 #if defined(MUST_THREAD_EVENTS)
 	flags |= SDL_INIT_EVENTTHREAD;
 #elif defined(CANT_THREAD_EVENTS)
@@ -158,6 +159,7 @@ int SDL_VideoInit (const char *driver_name, Uint32 flags)
 		SDL_SetError("OS doesn't support threaded events");
 		return(-1);
 	}
+#endif
 #endif
 
 	/* Check to make sure we don't overwrite 'current_video' */
@@ -273,7 +275,11 @@ int SDL_VideoInit (const char *driver_name, Uint32 flags)
 		SDL_VideoQuit();
 		return(-1);
 	}
+#ifndef MINI_SDL
 	SDL_CursorInit(flags & SDL_INIT_EVENTTHREAD);
+#else
+	SDL_CursorInit(flags);
+#endif
 
 	/* We're ready to go! */
 	return(0);

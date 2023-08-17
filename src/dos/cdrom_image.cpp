@@ -44,6 +44,8 @@ using namespace std;
 #define MAX_LINE_LENGTH 512
 #define MAX_FILENAME_LENGTH 256
 
+#ifndef MINI_SDL
+
 CDROM_Interface_Image::BinaryFile::BinaryFile(const char *filename, bool &error)
 {
 	file = new ifstream(filename, ios::in | ios::binary);
@@ -712,3 +714,4 @@ void CDROM_Image_Init(Section* section) {
 	section->AddDestroyFunction(CDROM_Image_Destroy, false);
 #endif
 }
+#endif

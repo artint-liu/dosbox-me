@@ -49,7 +49,9 @@ static bool write_active = false;
 static bool swap34 = false;
 bool button_wrapping_enabled = true;
 
+#ifndef MINI_SDL
 extern bool autofire; //sdl_mapper.cpp
+#endif
 
 static Bitu read_p201(Bitu port,Bitu iolen) {
 	/* Reset Joystick to 0 after TIMEOUT ms */
@@ -210,7 +212,9 @@ public:
 			ReadHandler.Install(0x201,read_p201,IO_MB);
 			WriteHandler.Install(0x201,write_p201,IO_MB);
 		}
+#ifndef MINI_SDL
 		autofire = section->Get_bool("autofire");
+#endif
 		swap34 = section->Get_bool("swap34");
 		button_wrapping_enabled = section->Get_bool("buttonwrap");
 		stick[0].enabled = false;

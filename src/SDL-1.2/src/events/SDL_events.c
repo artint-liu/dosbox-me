@@ -104,14 +104,14 @@ static int SDL_GobbleEvents(void *unused)
 
 		/* Queue pending key-repeat events */
 		SDL_CheckKeyRepeat();
-
+#ifndef MINI_SDL
 #ifndef DISABLE_JOYSTICK
 		/* Check for joystick state change */
 		if ( SDL_numjoysticks && (SDL_eventstate & SDL_JOYEVENTMASK) ) {
 			SDL_JoystickUpdate();
 		}
 #endif
-
+#endif
 		/* Give up the CPU for the rest of our timeslice */
 		SDL_EventLock.safe = 1;
 		if( SDL_timer_running ) {
@@ -155,6 +155,7 @@ static int SDL_StartEventThread(Uint32 flags)
 #endif /* !DISABLE_THREADS */
 	SDL_EventQ.active = 1;
 
+#ifndef MINI_SDL
 	if ( (flags&SDL_INIT_EVENTTHREAD) == SDL_INIT_EVENTTHREAD ) {
 		SDL_EventLock.lock = SDL_CreateMutex();
 		if ( SDL_EventLock.lock == NULL ) {
@@ -169,6 +170,7 @@ static int SDL_StartEventThread(Uint32 flags)
 	} else {
 		event_thread = 0;
 	}
+#endif
 	return(0);
 }
 
@@ -356,12 +358,13 @@ void SDL_PumpEvents(void)
 
 		/* Queue pending key-repeat events */
 		SDL_CheckKeyRepeat();
-
+#ifndef MINI_SDL
 #ifndef DISABLE_JOYSTICK
 		/* Check for joystick state change */
 		if ( SDL_numjoysticks && (SDL_eventstate & SDL_JOYEVENTMASK) ) {
 			SDL_JoystickUpdate();
 		}
+#endif
 #endif
 	}
 }

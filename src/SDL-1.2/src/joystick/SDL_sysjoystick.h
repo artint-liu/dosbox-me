@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -84,3 +85,4 @@ extern void SDL_SYS_JoystickClose(SDL_Joystick *joystick);
 /* Function to perform any system-specific joystick related cleanup */
 extern void SDL_SYS_JoystickQuit(void);
 
+#endif

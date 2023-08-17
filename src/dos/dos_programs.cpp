@@ -48,7 +48,9 @@
 Bitu DEBUG_EnableDebugger(void);
 #endif
 
+#ifndef MINI_SDL
 void MSCDEX_SetCDInterface(int intNr, int forceCD);
+#endif
 static Bitu ZDRIVE_NUM = 25;
 
 static const char* UnmountHelper(char umount) {
@@ -190,6 +192,7 @@ public:
 			return;
 		}
 		/* Show list of cdroms */
+#ifndef MINI_SDL
 		if (cmd->FindExist("-cd",false)) {
 			int num = SDL_CDNumDrives();
    			WriteOut(MSG_Get("PROGRAM_MOUNT_CDROMS_FOUND"),num);
@@ -198,6 +201,7 @@ public:
 			};
 			return;
 		}
+#endif
 
 		std::string type="dir";
 		cmd->FindString("-t",type,true);
@@ -326,6 +330,7 @@ public:
 			if (temp_line[temp_line.size()-1]!=CROSS_FILESPLIT) temp_line+=CROSS_FILESPLIT;
 			Bit8u bit8size=(Bit8u) sizes[1];
 			if (type=="cdrom") {
+#ifndef MINI_SDL
 				int num = -1;
 				cmd->FindInt("-usecd",num,true);
 				int error = 0;
@@ -372,6 +377,7 @@ public:
 					delete newdrive;
 					return;
 				}
+#endif
 			} else {
 				/* Give a warning when mount c:\ or the / */
 #if defined (WIN32) || defined(OS2)
@@ -1282,6 +1288,7 @@ public:
 				imageDiskList[0] = ((fatDrive *)newdrive)->loadedDisk;
 			}
 		} else if (fstype=="iso") {
+#ifndef MINI_SDL
 			if (Drives[drive-'A']) {
 				WriteOut(MSG_Get("PROGRAM_IMGMOUNT_ALREADY_MOUNTED"));
 				return;
@@ -1329,7 +1336,7 @@ public:
 				tmp += "; " + paths[i];
 			}
 			WriteOut(MSG_Get("PROGRAM_MOUNT_STATUS_2"), drive, tmp.c_str());
-			
+#endif	
 		} else if (fstype=="none") {
 			if(imageDiskList[drive-'0'] != NULL) delete imageDiskList[drive-'0'];
 			imageDiskList[drive-'0'] = newImage;

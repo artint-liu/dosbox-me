@@ -99,9 +99,13 @@ void BIOS_Init(Section*);
 void DEBUG_Init(Section*);
 void CMOS_Init(Section*);
 
+#ifndef MINI_SDL
 void MSCDEX_Init(Section*);
+#endif
 void DRIVES_Init(Section*);
+#ifndef MINI_SDL
 void CDROM_Image_Init(Section*);
+#endif
 
 /* Dos Internal mostly */
 void EMS_Init(Section*);
@@ -743,9 +747,14 @@ void DOSBOX_Init(void) {
 	Pstring->Set_help("Language code of the keyboard layout (or none).");
 
 	// Mscdex
+#ifndef MINI_SDL
 	secprop->AddInitFunction(&MSCDEX_Init);
+#endif
 	secprop->AddInitFunction(&DRIVES_Init);
+#ifndef MINI_SDL
 	secprop->AddInitFunction(&CDROM_Image_Init);
+#endif
+
 #if C_IPX
 	secprop=control->AddSection_prop("ipx",&IPX_Init,true);
 	Pbool = secprop->Add_bool("ipx",Property::Changeable::WhenIdle, false);

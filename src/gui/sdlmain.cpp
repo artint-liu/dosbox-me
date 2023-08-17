@@ -208,7 +208,9 @@ struct SDL_Block {
 		Bitu sensitivity;
 	} mouse;
 	SDL_Rect updateRects[1024];
+#ifndef MINI_SDL
 	Bitu num_joysticks;
+#endif
 #if defined (WIN32)
 	bool using_windib;
 	// Time when sdl regains focus (alt-tab) in windowed mode
@@ -1266,7 +1268,7 @@ static void GUI_StartUp(Section * sec) {
 
 #endif	//OPENGL
 	/* Initialize screen for first time */
-	sdl.surface=SDL_SetVideoMode_Wrap(640,400,0,0);
+	sdl.surface=SDL_SetVideoMode_Wrap(640,400,0, SDL_RESIZABLE);
 	if (sdl.surface == NULL) E_Exit("Could not initialize video: %s",SDL_GetError());
 	sdl.desktop.bpp=sdl.surface->format->BitsPerPixel;
 	if (sdl.desktop.bpp==24) {
@@ -1452,6 +1454,7 @@ void GFX_Events() {
 #endif
 
 	SDL_Event event;
+#ifndef MINI_SDL
 #if defined (REDUCE_JOYSTICK_POLLING)
 	static int poll_delay = 0;
 	int time = GetTicks();
@@ -1460,6 +1463,7 @@ void GFX_Events() {
 		if (sdl.num_joysticks > 0) SDL_JoystickUpdate();
 		MAPPER_UpdateJoysticks();
 	}
+#endif
 #endif
 	while (SDL_PollEvent(&event)) {
 #if SDL_XORG_FIX
@@ -1924,15 +1928,17 @@ int main(int argc, char* argv[]) {
 #endif
 	// Don't init timers, GetTicks seems to work fine and they can use a fair amount of power (Macs again) 
 	// Please report problems with audio and other things.
-	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO | /*SDL_INIT_TIMER |*/ SDL_INIT_CDROM
-		|SDL_INIT_NOPARACHUTE
+	if ( SDL_Init( SDL_INIT_AUDIO|SDL_INIT_VIDEO | /*SDL_INIT_TIMER | SDL_INIT_CDROM |*/
+		SDL_INIT_NOPARACHUTE
 		) < 0 ) E_Exit("Can't init SDL %s",SDL_GetError());
 	sdl.inited = true;
 
+#ifndef MINI_SDL
 #ifndef DISABLE_JOYSTICK
 	//Initialise Joystick separately. This way we can warn when it fails instead
 	//of exiting the application
 	if( SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0 ) LOG_MSG("Failed to init joystick support");
+#endif
 #endif
 
 	sdl.laltstate = SDL_KEYUP;
@@ -1967,7 +1973,10 @@ int main(int argc, char* argv[]) {
 			if (strcmp(sdl_drv_name,"windib")==0) LOG_MSG("SDL_Init: Starting up with SDL windib video driver.\n          Try to update your video card and directx drivers!");
 		}
 #endif
-	sdl.num_joysticks=SDL_NumJoysticks();
+
+#ifndef MINI_SDL
+		sdl.num_joysticks=SDL_NumJoysticks();
+#endif
 
 	/* Parse configuration files */
 	std::string config_file,config_path;

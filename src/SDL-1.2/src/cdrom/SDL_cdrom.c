@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -348,3 +349,4 @@ void SDL_CDROMQuit(void)
 	SDL_SYS_CDQuit();
 	SDL_cdinitted = 0;
 }
+#endif

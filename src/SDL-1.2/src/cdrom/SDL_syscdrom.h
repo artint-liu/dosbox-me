@@ -19,6 +19,7 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+#ifndef MINI_SDL
 
 #ifdef SAVE_RCSID
 static char rcsid =
@@ -77,4 +78,4 @@ extern int  SDL_SYS_CDInit(void);
 
 /* Function to perform any system-specific CD-ROM related cleanup */
 extern void SDL_SYS_CDQuit(void);
-
+#endif
